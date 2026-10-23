@@ -1,0 +1,30 @@
+# .NET build output
+bin/
+obj/
+artifacts/
+TestResults/
+coverage/
+
+# Visual Studio and per-user IDE state
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Local environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Local conversation databases and SQLite sidecar files
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Downloaded local model weights
+*.onnx
+voices-v1.0.bin
+ggml-*.bin

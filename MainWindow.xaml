@@ -1,0 +1,315 @@
+﻿<Window x:Class="DesktopAssistant.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Gwen"
+        Height="680"
+        Width="1040"
+        MinHeight="480"
+        MinWidth="760"
+        Background="#978C8C">
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#FFFAFA" />
+            <Setter Property="Foreground" Value="#292424" />
+            <Setter Property="BorderBrush" Value="#C8BDBD" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="12,9" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="TextBoxBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="TextBoxBorder" Property="BorderBrush" Value="#544949" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="TextBoxBorder" Property="Opacity" Value="0.55" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#514646" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="14,8" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.88" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ToggleButton">
+            <Setter Property="Background" Value="#E6DEDE" />
+            <Setter Property="Foreground" Value="#403737" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="ToggleBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="ToggleBorder" Property="Background" Value="#514646" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ToggleBorder" Property="Opacity" Value="0.88" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock FontSize="21" FontWeight="SemiBold" Foreground="#FFF9F9" Text="Hi, I'm Gwen." />
+                <TextBlock x:Name="ConnectionStatus"
+                           Margin="0,3,0,0"
+                           Foreground="#FFF4F4"
+                           Text="Display mode · Local model" />
+            </StackPanel>
+            <ToggleButton x:Name="ComputerModeToggle"
+                          Grid.Column="1"
+                          Margin="0,0,10,0"
+                          VerticalAlignment="Center"
+                          Content="Computer mode"
+                          Checked="ComputerModeToggle_Changed"
+                          Unchecked="ComputerModeToggle_Changed" />
+            <Border Grid.Column="2" Padding="11,7" VerticalAlignment="Center" Background="#F4EEEE" CornerRadius="12">
+                <TextBlock FontSize="12" Foreground="#514646" Text="Qwen3.5 9B · Local" />
+            </Border>
+            <Button Grid.Column="3" Margin="8,0,0,0" VerticalAlignment="Center" Content="Memory" ToolTip="Review or clear locally saved conversations and preferences" Click="MemoryButton_Click" />
+            <Button x:Name="UnloadModelButton"
+                    Grid.Column="4"
+                    Margin="8,0,0,0"
+                    VerticalAlignment="Center"
+                    Content="Unload model"
+                    ToolTip="Release the model from RAM and GPU memory"
+                    Click="UnloadModelButton_Click" />
+        </Grid>
+
+        <Grid x:Name="WorkspaceGrid" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.1*" />
+                <ColumnDefinition Width="16" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid x:Name="ConversationPane" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0"
+                        Padding="14"
+                        Background="#F4F0F0"
+                        BorderBrush="#D8CECE"
+                        BorderThickness="1"
+                        CornerRadius="16">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Margin="0,0,0,8" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button x:Name="ClearChatViewButton"
+                                    Margin="0,0,8,0"
+                                    Padding="10,6"
+                                    Content="Clear chat"
+                                    ToolTip="Clear messages from the screen without deleting saved history"
+                                    Click="ClearChatViewButton_Click" />
+                            <Button x:Name="RestoreChatViewButton"
+                                    Padding="10,6"
+                                    Content="Show chat"
+                                    ToolTip="Restore the saved messages from this conversation"
+                                    IsEnabled="False"
+                                    Click="RestoreChatViewButton_Click" />
+                        </StackPanel>
+                        <ScrollViewer x:Name="ConversationScrollViewer" Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <StackPanel x:Name="ConversationPanel" />
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+                <Grid Grid.Row="1" Margin="0,12,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="MessageInput"
+                             MinHeight="44"
+                             VerticalContentAlignment="Center"
+                             AcceptsReturn="False"
+                             ToolTip="Type a message, or say ‘search the web for…’ for live sources"
+                             KeyDown="MessageInput_KeyDown" />
+                    <Button x:Name="PushToTalkButton"
+                            Grid.Column="3"
+                            Margin="8,0,0,0"
+                            Content="Hold to talk"
+                            ToolTip="Hold to speak. Pressing this during a reply interrupts it."
+                            PreviewMouseLeftButtonDown="PushToTalkButton_PreviewMouseLeftButtonDown"
+                            PreviewMouseLeftButtonUp="PushToTalkButton_PreviewMouseLeftButtonUp"
+                            PreviewKeyDown="PushToTalkButton_PreviewKeyDown"
+                            PreviewKeyUp="PushToTalkButton_PreviewKeyUp" />
+                    <Button x:Name="VoiceButton"
+                            Grid.Column="4"
+                            Margin="8,0,0,0"
+                            Content="Talk"
+                            ToolTip="Start or end continuous voice conversation"
+                            Click="VoiceButton_Click" />
+                    <Button x:Name="MuteButton"
+                            Grid.Column="1"
+                            Width="44"
+                            Margin="8,0,0,0"
+                            Padding="8,6"
+                            FontSize="17"
+                            Content="🎙"
+                            ToolTip="Mute the assistant's spoken replies"
+                            Click="MuteButton_Click" />
+                    <Button x:Name="StopButton"
+                            Grid.Column="5"
+                            Margin="8,0,0,0"
+                            Content="Stop"
+                            Visibility="Collapsed"
+                            Click="StopButton_Click" />
+                    <Button x:Name="SendButton"
+                            Grid.Column="6"
+                            Margin="8,0,0,0"
+                            Content="Send"
+                            Click="SendButton_Click" />
+                    <Button x:Name="TtsSettingsButton"
+                            Grid.Column="2"
+                            Width="44"
+                            Margin="8,0,0,0"
+                            Content="⚙"
+                            ToolTip="Voice selection, speed, and volume"
+                            Click="TtsSettingsButton_Click" />
+                </Grid>
+            </Grid>
+
+            <Border x:Name="CompanionPanel"
+                    Grid.Column="2"
+                    Padding="24"
+                    Background="#8CA281"
+                    CornerRadius="22">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0"
+                               HorizontalAlignment="Center"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Foreground="#344233"
+                               Text="Gwen" />
+                               
+                    <Viewbox Grid.Row="1" Stretch="Uniform" MaxWidth="310" MaxHeight="330">
+                        <Canvas x:Name="CompanionFace" Width="300" Height="300">
+                            <Ellipse Width="278" Height="278" Canvas.Left="11" Canvas.Top="11">
+                                <Ellipse.Fill>
+                                    <RadialGradientBrush Center="0.34,0.28" GradientOrigin="0.30,0.24" RadiusX="0.78" RadiusY="0.78">
+                                        <GradientStop Color="#F0EDE2" Offset="0" />
+                                        <GradientStop Color="#DDD9CC" Offset="0.68" />
+                                        <GradientStop Color="#CBC6B8" Offset="1" />
+                                    </RadialGradientBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <Ellipse x:Name="LeftEye" Width="23" Height="34" Canvas.Left="83" Canvas.Top="103" Fill="#354039" RenderTransformOrigin="0.5,0.5">
+                                <Ellipse.RenderTransform><ScaleTransform ScaleY="1" /></Ellipse.RenderTransform>
+                            </Ellipse>
+                            <Ellipse x:Name="RightEye" Width="23" Height="34" Canvas.Left="194" Canvas.Top="103" Fill="#354039" RenderTransformOrigin="0.5,0.5">
+                                <Ellipse.RenderTransform><ScaleTransform ScaleY="1" /></Ellipse.RenderTransform>
+                            </Ellipse>
+                            <Ellipse Width="26" Height="13" Canvas.Left="60" Canvas.Top="157" Fill="#D3A99A" Opacity="0.50" />
+                            <Ellipse Width="26" Height="13" Canvas.Left="214" Canvas.Top="157" Fill="#D3A99A" Opacity="0.50" />
+                            <Border x:Name="Mouth" Width="66" Height="10" Canvas.Left="117" Canvas.Top="194" Background="#755E58" CornerRadius="18" />
+                        </Canvas>
+                    </Viewbox>
+                    <StackPanel Grid.Row="2" Margin="0,8,0,2" HorizontalAlignment="Center">
+                        <TextBlock x:Name="FaceMoodText"
+                                   HorizontalAlignment="Center"
+                                   FontSize="21"
+                                   FontWeight="SemiBold"
+                                   Foreground="#263329"
+                                   Text="Here with you" />
+                        <TextBlock x:Name="FaceActivityText"
+                                   Margin="0,5,0,0"
+                                   HorizontalAlignment="Center"
+                                   Foreground="#344233"
+                                   Text="Ready when you are" />
+                        <TextBlock x:Name="VoiceStateText"
+                                   Margin="0,5,0,0"
+                                   HorizontalAlignment="Center"
+                                   Foreground="#344233"
+                                   FontWeight="SemiBold"
+                                   Text="Voice: Idle" />
+                        <TextBlock x:Name="TaskStatusText"
+                                   Margin="0,16,0,0"
+                                   MaxWidth="340"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   Foreground="#29372B"
+                                   Text="No background tasks are running."
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
